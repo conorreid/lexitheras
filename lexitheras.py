@@ -136,6 +136,9 @@ class PerseusVocabScraper:
     
     def scrape_vocabulary_list(self, text_urn, get_all_pages=True):
         """Scrape vocabulary from Perseus for a given text URN"""
+        vocab_items = []
+        
+        # Use page=all to get all vocabulary at once
         if get_all_pages:
             url = f"{self.base_url}/word-list/{text_urn}/?page=all"
         else:
@@ -145,30 +148,46 @@ class PerseusVocabScraper:
         response.raise_for_status()
         
         soup = BeautifulSoup(response.text, 'lxml')
-        vocab_items = []
         
         # Find vocabulary table
         table = soup.find('table', class_='word-list')
         if not table:
             raise ValueError("Could not find vocabulary table on page")
         
-        rows = table.find_all('tr')[1:]  # Skip header row
+        # Get all rows (skip header)
+        rows = table.find_all('tr')[1:]
         
         for idx, row in enumerate(rows, 1):
-            cells = row.find_all('td')
-            if len(cells) >= 2:
-                # Extract data from cells
-                # Column 0: Greek word
-                # Column 1: English translation/definition
-                greek_word = cells[0].text.strip()
-                translation = cells[1].text.strip()
-                
-                vocab_items.append({
-                    'rank': idx,  # Use row position as rank
-                    'word': greek_word,
-                    'lemma': greek_word,  # Perseus doesn't separate lemma in this view
-                    'translation': translation
-                })
+            # Extract Greek word from element with class 'lemma_text'
+            lemma_elem = row.find(class_='lemma_text')
+            if not lemma_elem:
+                continue
+            greek_word = lemma_elem.text.strip()
+            
+            # Extract translation from td with class 'shortdef'
+            shortdef_elem = row.find('td', class_='shortdef')
+            if not shortdef_elem:
+                continue
+            translation = shortdef_elem.text.strip()
+            
+            # Extract count from td with class 'count'
+            count_elem = row.find('td', class_='count')
+            count = 0
+            if count_elem:
+                count_text = count_elem.text.strip()
+                # Remove commas and convert to int
+                try:
+                    count = int(count_text.replace(',', ''))
+                except ValueError:
+                    count = 0
+            
+            vocab_items.append({
+                'rank': idx,
+                'word': greek_word,
+                'lemma': greek_word,
+                'translation': translation,
+                'count': count
+            })
         
         return vocab_items
 
@@ -187,23 +206,28 @@ class AnkiDeckCreator:
             fields=[
                 {'name': 'Greek'},
                 {'name': 'Translation'},
-                {'name': 'Lemma'},
-                {'name': 'Rank'}
+                {'name': 'Rank'},
+                {'name': 'Count'}
             ],
             templates=[
                 {
                     'name': 'Greek to English',
-                    'qfmt': '{{Greek}}<br><small>Rank: {{Rank}}</small>',
-                    'afmt': '{{FrontSide}}<hr id="answer">{{Translation}}<br><br><small>Lemma: {{Lemma}}</small>',
+                    'qfmt': '<div style="font-size: 32px;">{{Greek}}</div>',
+                    'afmt': '''{{FrontSide}}<hr id="answer">
+<div style="font-size: 24px; margin: 20px 0;">{{Translation}}</div>
+<div style="font-size: 14px; color: #666; margin-top: 20px;">
+Rank: {{Rank}} | Occurrences: {{Count}}
+</div>''',
                 }
             ],
             css='''
             .card {
-                font-family: arial;
+                font-family: 'Segoe UI', Arial, sans-serif;
                 font-size: 20px;
                 text-align: center;
                 color: black;
                 background-color: white;
+                padding: 20px;
             }
             '''
         )
@@ -216,8 +240,8 @@ class AnkiDeckCreator:
                 fields=[
                     item['word'],
                     item['translation'],
-                    item['lemma'],
-                    str(item['rank'])
+                    str(item['rank']),
+                    str(item.get('count', 0))
                 ]
             )
             self.deck.add_note(note)
@@ -233,7 +257,8 @@ class AnkiDeckCreator:
 @click.option('--deck-name', '-n', default=None, help='Name for the Anki deck')
 @click.option('--list-texts', '-l', is_flag=True, help='List all available texts')
 @click.option('--search-only', '-s', is_flag=True, help='Only search, don\'t create deck')
-def main(text_identifier, output, deck_name, list_texts, search_only):
+@click.option('--limit', default=0, help='Limit number of vocabulary items (0 = no limit)')
+def main(text_identifier, output, deck_name, list_texts, search_only, limit):
     """
     Create an Anki deck from a Perseus vocabulary list.
     
@@ -334,6 +359,11 @@ def main(text_identifier, output, deck_name, list_texts, search_only):
         vocab_items = scraper.scrape_vocabulary_list(text_urn)
         
         click.echo(f"Found {len(vocab_items)} vocabulary items")
+        
+        # Apply limit if specified
+        if limit > 0 and len(vocab_items) > limit:
+            vocab_items = vocab_items[:limit]
+            click.echo(f"Limited to {limit} items")
         
         # Create Anki deck
         deck_creator = AnkiDeckCreator(deck_name)
