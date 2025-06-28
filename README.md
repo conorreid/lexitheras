@@ -2,6 +2,9 @@
 
 A tool to convert Perseus Greek vocabulary lists into Anki flashcard decks.
 
+![Blind Orion Searching for the Rising Sun by Nicolas Poussin (1658)](orion_poussin.jpg)
+*Blind Orion Searching for the Rising Sun* by Nicolas Poussin (1658) - Metropolitan Museum of Art
+
 ## Features
 
 - Search texts by title or author (e.g., "iliad", "homer", "symposium")
