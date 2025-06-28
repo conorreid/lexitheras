@@ -1,0 +1,13 @@
+# Example Usage
+
+# For the Iliad:
+python lexitheras.py urn:cts:greekLit:tlg0012.tlg001.perseus-grc2
+
+# For the Odyssey:
+python lexitheras.py urn:cts:greekLit:tlg0012.tlg002.perseus-grc2
+
+# With custom output name:
+python lexitheras.py urn:cts:greekLit:tlg0012.tlg001.perseus-grc2 -o iliad_vocab.apkg
+
+# With custom deck name:
+python lexitheras.py urn:cts:greekLit:tlg0012.tlg001.perseus-grc2 -n "Homer's Iliad Vocabulary"
