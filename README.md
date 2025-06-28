@@ -25,7 +25,7 @@ source venv/bin/activate
 pip install -e .
 ```
 
-### Using pip (coming soon)
+### Using pip
 
 ```bash
 pip install lexitheras

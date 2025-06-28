@@ -12,8 +12,9 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="lexitheras",
-    version="0.1.0",
+    version="1.0.0",
     author="Conor Reid",
+    author_email="",  # Add your email if you want
     description="Convert Perseus Greek vocabulary lists into Anki flashcard decks",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -21,7 +22,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Education",
         "Topic :: Education",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
