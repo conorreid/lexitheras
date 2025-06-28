@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lexitheras"
+version = "0.1.0"
+description = "Convert Perseus Greek vocabulary lists into Anki flashcard decks"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "GPL-3.0"}
+authors = [
+    {name = "Conor Reid"},
+]
+keywords = ["greek", "ancient-greek", "anki", "flashcards", "perseus", "vocabulary", "language-learning"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Topic :: Education",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/conorreid/lexitheras"
+Repository = "https://github.com/conorreid/lexitheras"
+Issues = "https://github.com/conorreid/lexitheras/issues"
+
+[project.scripts]
+lexitheras = "lexitheras.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"

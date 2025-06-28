@@ -7,6 +7,9 @@ __pycache__/
 venv/
 env/
 ENV/
+*.egg-info/
+dist/
+build/
 
 # Anki decks
 *.apkg

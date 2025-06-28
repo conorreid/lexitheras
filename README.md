@@ -2,7 +2,7 @@
 
 A tool to convert Perseus Greek vocabulary lists into Anki flashcard decks.
 
-![Blind Orion Searching for the Rising Sun by Nicolas Poussin (1658)](orion_poussin.jpg)
+![Blind Orion Searching for the Rising Sun by Nicolas Poussin (1658)](docs/images/orion_poussin.jpg)
 *Blind Orion Searching for the Rising Sun* by Nicolas Poussin (1658) - Metropolitan Museum of Art
 
 ## Features
@@ -15,36 +15,49 @@ A tool to convert Perseus Greek vocabulary lists into Anki flashcard decks.
 
 ## Installation
 
+### From Source
+
 ```bash
 git clone git@github.com:conorreid/lexitheras.git
 cd lexitheras
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
+```
+
+### Using pip (coming soon)
+
+```bash
+pip install lexitheras
 ```
 
 ## Usage
 
 ### Search by title or author
 ```bash
-python lexitheras.py iliad        # Find and create deck for the Iliad
-python lexitheras.py symposium    # Choose between Plato's or Xenophon's
-python lexitheras.py homer        # See all texts by Homer
+lexitheras iliad        # Find and create deck for the Iliad
+lexitheras symposium    # Choose between Plato's or Xenophon's
+lexitheras homer        # See all texts by Homer
 ```
 
 ### List all available texts
 ```bash
-python lexitheras.py --list-texts
+lexitheras --list-texts
 ```
 
 ### Search without creating deck
 ```bash
-python lexitheras.py plato --search-only
+lexitheras plato --search-only
 ```
 
 ### Direct URN (if known)
 ```bash
-python lexitheras.py urn:cts:greekLit:tlg0012.tlg001.perseus-grc2
+lexitheras urn:cts:greekLit:tlg0012.tlg001.perseus-grc2
+```
+
+### Limit vocabulary items
+```bash
+lexitheras iliad --limit 100  # Only first 100 most frequent words
 ```
 
 ## Card Format
